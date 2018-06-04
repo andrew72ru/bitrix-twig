@@ -1,0 +1,16 @@
+{
+  "name": "creative/bitrix_twig",
+  "description": "Twig renderer for bitrix framework",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrew Zhdanovskih",
+      "email": "azh@crtweb.ru"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "twig/twig": "^1.35"
+  }
+}
