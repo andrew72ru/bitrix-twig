@@ -5,9 +5,9 @@
  * Time: 15:10.
  */
 
-namespace app\twig\Extensions;
+namespace Creative\Twig\Extensions;
 
-use app\twig\Exception\BitrixTwigException;
+use Creative\Twig\Exception\BitrixTwigException;
 use Bitrix\Main\LoaderException;
 use Bitrix\Main\SystemException;
 

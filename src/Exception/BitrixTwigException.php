@@ -5,7 +5,7 @@
  * Time: 14:14.
  */
 
-namespace app\twig\Exception;
+namespace Creative\Twig\Exception;
 
 use Throwable;
 

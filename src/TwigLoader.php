@@ -5,7 +5,7 @@
  * Time: 12:38.
  */
 
-namespace app\twig;
+namespace Creative\Twig;
 
 /**
  * Class BitrixLoader
@@ -24,7 +24,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
     private static $normalized = [];
 
     /**
-     * Include syntax:.
+     * Include syntax.
      *
      * `vendor:componentname[:template[:specifictemplatefile]]`
      *

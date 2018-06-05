@@ -1,5 +1,5 @@
 {
-  "name": "creative/bitrix_twig",
+  "name": "creative/bitrix-twig",
   "description": "Twig renderer for bitrix framework",
   "type": "library",
   "license": "MIT",
@@ -12,5 +12,13 @@
   "minimum-stability": "stable",
   "require": {
     "twig/twig": "^1.35"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "~2.2",
+    "codeception/codeception": "^2.3"
+  },
+  "autoload": {
+    "psr-4": { "Creative\\Twig": "src" },
+    "files": ["src/functions.php"]
   }
 }

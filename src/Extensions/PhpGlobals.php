@@ -5,7 +5,7 @@
  * Time: 15:03.
  */
 
-namespace app\twig\Extensions;
+namespace Creative\Twig\Extensions;
 
 /**
  * Access to global variables in twig templates.

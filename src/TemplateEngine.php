@@ -5,11 +5,11 @@
  * Time: 12:22.
  */
 
-namespace app\twig;
+namespace Creative\Twig;
 
-use app\twig\Exception\BitrixTwigException;
-use app\twig\Extensions\BitrixExtension;
-use app\twig\Extensions\PhpGlobals;
+use Creative\Twig\Exception\BitrixTwigException;
+use Creative\Twig\Extensions\BitrixExtension;
+use Creative\Twig\Extensions\PhpGlobals;
 use Bitrix\Main\Event;
 use Bitrix\Main\SystemException;
 
