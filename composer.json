@@ -1,5 +1,5 @@
 {
-  "name": "creative/bitrix-twig",
+  "name": "andrew72ru/bitrix-twig",
   "description": "Twig renderer for bitrix framework",
   "type": "library",
   "license": "MIT",
