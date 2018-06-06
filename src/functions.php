@@ -30,7 +30,7 @@ if(!function_exists('renderTwigTemplate')) {
     function renderTwigTemplate($templateFile, $arResult, $arParams, $arLangMessages,
         $templateFolder, $parentTemplateFolder, \CBitrixComponentTemplate $template)
     {
-        TemplateEngine::render($templateFile, $arResult, $arParams, $arLangMessages, $templateFolder,
+        echo TemplateEngine::render($templateFile, $arResult, $arParams, $arLangMessages, $templateFolder,
             $parentTemplateFolder, $template);
     }
 

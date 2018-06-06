@@ -18,6 +18,8 @@ use Bitrix\Main\SystemException;
  */
 class TemplateEngine
 {
+    const EVENT_NAME = 'onAfterTwigEngineInit';
+
     /**
      * @var null|self
      */
@@ -71,6 +73,7 @@ class TemplateEngine
      * @param \CBitrixComponentTemplate $template
      *
      * @throws BitrixTwigException
+     * @return string
      */
     public static function render($templateFile, $arResult, $arParams, $arLangMessages,
         $templateFolder, $parentTemplateFolder, \CBitrixComponentTemplate $template)
@@ -81,7 +84,7 @@ class TemplateEngine
 
         try {
             $instance = self::getInstance();
-            echo $instance->getEngine()->render($templateFile, [
+            $content = $instance->getEngine()->render($templateFile, [
                     'result' => $arResult,
                     'params' => $arParams,
                     'lang' => $arLangMessages,
@@ -96,17 +99,21 @@ class TemplateEngine
 
         $component_epilog = $templateFolder . '/component_epilog.php';
         if (file_exists($_SERVER['DOCUMENT_ROOT'] . $component_epilog)) {
-            $component = $template->__component;
+            $component = $template->getComponent();
 
-            /* @var \CBitrixComponent $component */
-            $component->SetTemplateEpilog([
+            if($component instanceof \CBitrixComponent) {
+                /* @var \CBitrixComponent $component */
+                $component->SetTemplateEpilog([
                     'epilogFile' => $component_epilog,
                     'templateName' => $template->__name,
                     'templateFile' => $template->__file,
                     'templateFolder' => $template->__folder,
                     'templateData' => false,
                 ]);
+            }
         }
+
+        return $content;
     }
 
     /**
@@ -163,7 +170,7 @@ class TemplateEngine
      */
     private function generateInitEvent()
     {
-        $eventName = 'onAfterTwigTemplateEngineInit';
+        $eventName = 'onAfterTwigEngineInit';
         $event = new Event('', [$this->engine]);
         $event->send();
 
