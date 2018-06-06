@@ -33,4 +33,6 @@ if(!function_exists('renderTwigTemplate')) {
         TemplateEngine::render($templateFile, $arResult, $arParams, $arLangMessages, $templateFolder,
             $parentTemplateFolder, $template);
     }
+
+    renderTwigTemplateInit();
 }
