@@ -150,7 +150,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
     protected function normalizeName($name)
     {
         if (false !== strpos($name, DIRECTORY_SEPARATOR)) {
-            $name = parent::normalizeName($name);
+            $name = preg_replace('#/{2,}#', '/', str_replace('\\', '/', $name));
         }
         $isComponentPath = false !== strpos($name, ':');
         $isGlobalPath = '/' === substr($name, 0, 1);
