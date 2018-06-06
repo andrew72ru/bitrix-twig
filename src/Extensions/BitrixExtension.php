@@ -40,7 +40,7 @@ class BitrixExtension extends \Twig_Extension implements \Twig_Extension_Globals
                 $this->isD7() ? '\\Bitrix\\Main\\Localization\\Loc::getMessage' : 'GetMessage'
             ),
             new \Twig_SimpleFunction('include_component', [__CLASS__, 'showComponent']),
-            new \Twig_SimpleFunction('component_by_code', [__CLASS__, 'componentByCode']),
+            new \Twig_SimpleFunction('block_by_code', [__CLASS__, 'componentByCode']),
             new \Twig_SimpleFunction('_call_static', [__CLASS__, 'callStatic']),
         ];
     }
