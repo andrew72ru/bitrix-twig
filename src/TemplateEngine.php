@@ -162,7 +162,6 @@ class TemplateEngine
 
         $this->engine->addExtension(new PhpGlobals());
         $this->engine->addExtension(new BitrixExtension());
-        $this->engine->addExtension(new \Twig_Extensions_Extension_Intl());
     }
 
     /**
