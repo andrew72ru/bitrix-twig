@@ -11,3 +11,10 @@ extensions:
 
 settings:
     bootstrap: _bootstrap.php
+
+coverage:
+    enabled: true
+    include:
+      - src/*
+    exclude:
+      - src/functions.php

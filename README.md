@@ -26,7 +26,7 @@ If you even feel headache because of this, wait a minute, **this is not all**.
 
 ## Installation
 
-You **MUST** use the composer autoloader in application init.
+You **MUST** use the composer autoloader in application init. You site **MUST** use utf-8 codepage.
 
 To install module, simple run 
 
@@ -42,7 +42,7 @@ Default configuration:
 
 ```php
 'debug' => false,
-'charset' => SITE_CHARSET,
+'charset' => 'utf-8',
 'cache' => $_SERVER['DOCUMENT_ROOT'] . '/bitrix/cache/twig',
 'auto_reload' => $this->request->get('clear_cache') ? 'Y' === strtoupper($this->request->get('clear_cache')) : false,
 'autoescape' => false,
@@ -112,4 +112,6 @@ The module call the `onAfterTwigEngineInit` event after initialization. You may 
 
 ## Tests
 
-In progress
+Now the test contains a minimal (example) test, because of bitrix framework not have a psr autoloader, service container and other framework-must-have thinks. Tests are possible only if you have installed framework, installed module and at least one template, renders by this module.
+
+If you know how to make test for all of classes — you welcome.

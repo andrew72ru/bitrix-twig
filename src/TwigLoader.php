@@ -26,6 +26,23 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
     private static $normalized = [];
 
     /**
+     * @var \CBitrixComponent
+     */
+    private $componentClass;
+
+    /**
+     * @var \CBitrixComponentTemplate
+     */
+    private $templateClass;
+
+    public function __construct($paths = array(), string $rootPath = null, $componentClass = null, $templateClass = null)
+    {
+        parent::__construct($paths, $rootPath);
+        $this->componentClass = $componentClass ?: new \CBitrixComponent();
+        $this->templateClass = $templateClass ?: new \CBitrixComponentTemplate();
+    }
+
+    /**
      * Include syntax.
      *
      * `vendor:componentname[:template[:specifictemplatefile]]`
@@ -234,13 +251,13 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
         }
 
         $componentName = "{$namespace}:{$component}";
-        $component = new \CBitrixComponent();
+        $component = $this->componentClass;
 
         $component->InitComponent($componentName, $template);
         if (!$isRelative) {
             $component->__templatePage = $page;
         }
-        $obTemplate = new \CBitrixComponentTemplate();
+        $obTemplate = $this->templateClass;
         $obTemplate->Init($component);
         $templatePath = $_SERVER['DOCUMENT_ROOT']
             . ($isRelative ? ($obTemplate->GetFolder() . DIRECTORY_SEPARATOR . $page) : $obTemplate->GetFile());

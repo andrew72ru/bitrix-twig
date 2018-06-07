@@ -7,11 +7,11 @@
 
 namespace Creative\Twig;
 
+use Bitrix\Main\Application;
+use Bitrix\Main\Config\Configuration;
 use Creative\Twig\Exception\BitrixTwigException;
 use Creative\Twig\Extensions\BitrixExtension;
 use Creative\Twig\Extensions\PhpGlobals;
-use Bitrix\Main\Event;
-use Bitrix\Main\SystemException;
 
 /**
  * Singleton for render twig templates.
@@ -41,24 +41,56 @@ class TemplateEngine
     private $engine;
 
     /**
+     * @var Application
+     */
+    private $application;
+
+    /**
+     * @var Configuration
+     */
+    private $configuration;
+
+    /**
      * TemplateEngine constructor.
+     *
+     * @param Application|null          $application
+     * @param Configuration|null        $configuration
+     * @param \Bitrix\Main\Event|null   $eventClass
      *
      * @throws BitrixTwigException
      */
-    protected function __construct()
+    public function __construct(Application $application = null, Configuration $configuration = null, \Bitrix\Main\Event $eventClass = null)
     {
+        if (null === $application) {
+            $this->application = Application::getInstance();
+        } else {
+            $this->application = $application;
+        }
+
+        if (null === $configuration) {
+            $this->configuration = Configuration::getInstance();
+        } else {
+            $this->configuration = $configuration;
+        }
+
         try {
-            $this->request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
-        } catch (SystemException $e) {
+            $this->request = $this->application->getContext()->getRequest();
+        } catch (\Exception $e) {
             throw new BitrixTwigException($e->getMessage());
         }
 
-        $config = (array) \Bitrix\Main\Config\Configuration::getInstance()->get('twigRenderer') ?: [];
+        $config = (array) $this->configuration->get('twigRenderer') ?: [];
         $this->options = array_merge($this->getDefaultOptions(), $config);
 
         $this->engine = new \Twig_Environment(new TwigLoader(), $this->options);
         $this->addExtensions();
-        $this->generateInitEvent();
+
+        if($eventClass === null) {
+            $eventClass = new \Bitrix\Main\Event('', self::EVENT_NAME);
+            $eventClass->setParameters([$this->engine]);
+        }
+
+        $this->generateInitEvent($eventClass);
 
         self::$instance = $this;
     }
@@ -73,6 +105,7 @@ class TemplateEngine
      * @param \CBitrixComponentTemplate $template
      *
      * @throws BitrixTwigException
+     *
      * @return string
      */
     public static function render($templateFile, $arResult, $arParams, $arLangMessages,
@@ -101,7 +134,7 @@ class TemplateEngine
         if (file_exists($_SERVER['DOCUMENT_ROOT'] . $component_epilog)) {
             $component = $template->getComponent();
 
-            if($component instanceof \CBitrixComponent) {
+            if ($component instanceof \CBitrixComponent) {
                 /* @var \CBitrixComponent $component */
                 $component->SetTemplateEpilog([
                     'epilogFile' => $component_epilog,
@@ -125,7 +158,7 @@ class TemplateEngine
     {
         return [
             'debug' => false,
-            'charset' => SITE_CHARSET,
+            'charset' => 'utf-8',
             'cache' => $_SERVER['DOCUMENT_ROOT'] . '/bitrix/cache/twig',
             'auto_reload' => $this->request->get('clear_cache')
                 ? 'Y' === strtoupper($this->request->get('clear_cache')) : false,
@@ -165,20 +198,23 @@ class TemplateEngine
     }
 
     /**
+     * @param \Bitrix\Main\Event $event
+     *
      * @throws BitrixTwigException
      */
-    private function generateInitEvent()
+    private function generateInitEvent($event)
     {
-        $eventName = 'onAfterTwigEngineInit';
-        $event = new Event('', [$this->engine]);
         $event->send();
 
         if ($results = $event->getResults()) {
             foreach ($results as $result) {
-                if (\Bitrix\Main\EventResult::SUCCESS == $result->getType()) {
+                /**
+                 * Use 1 instead of Bitrix\Main\EventResult for tests without all framework
+                 */
+                if (1 == $result->getType()) {
                     $twig = current($result->getParameters());
                     if (!($twig instanceof \Twig_Environment)) {
-                        throw new BitrixTwigException("Event {$eventName} must return instance of \\Twig_Environment");
+                        throw new BitrixTwigException("Event " . self::EVENT_NAME . " must return instance of \\Twig_Environment");
                     }
                 }
                 $this->engine = $twig;
