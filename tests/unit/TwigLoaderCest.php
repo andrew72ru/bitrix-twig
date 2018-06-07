@@ -3,6 +3,14 @@
 
 class TwigLoaderCest
 {
+    private $component;
+
+    private $componentTemplate;
+
+    public function _before()
+    {
+    }
+
     public function tryToCreateClass(UnitTester $I)
     {
         $I->assertInstanceOf(\Creative\Twig\TwigLoader::class, new \Creative\Twig\TwigLoader());
@@ -25,5 +33,13 @@ class TwigLoaderCest
 
         $notFull = $method->invokeArgs($loader, ['vendor:component.name']);
         $I->assertEquals('vendor:component.name:.default:template', $notFull);
+    }
+
+    public function tryToResolvePathWithLoader(UnitTester $I)
+    {
+        $loader = new \Creative\Twig\TwigLoader();
+        $name = 'app:mycomponent:template:main';
+
+        $I->assertEquals($name, $loader->getSourcePath($name));
     }
 }
