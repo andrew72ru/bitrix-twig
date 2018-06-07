@@ -7,6 +7,8 @@
 
 namespace Creative\Twig;
 
+use Creative\Twig\Exception\BitrixTwigException;
+
 /**
  * Class BitrixLoader
  * Twig loader for bitrix.
@@ -38,6 +40,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      *
      * @return bool|mixed|string
      *
+     * @throws BitrixTwigException
      * @throws \Twig_Error_Loader
      */
     public function getSource($name)
@@ -49,6 +52,8 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      * @param string $name
      *
      * @return bool|null|string|string[]
+     *
+     * @throws BitrixTwigException
      */
     public function getCacheKey($name)
     {
@@ -63,6 +68,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      *
      * @return bool
      *
+     * @throws BitrixTwigException
      * @throws \Twig_Error_Loader
      */
     public function isFresh($name, $time)
@@ -75,6 +81,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      *
      * @return mixed|null|string|string[]
      *
+     * @throws BitrixTwigException
      * @throws \Twig_Error_Loader
      */
     public function getSourcePath($name)
@@ -119,6 +126,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      *
      * @return bool|mixed|null|string|string[]
      *
+     * @throws BitrixTwigException
      * @throws \Twig_Error_Loader
      */
     protected function findTemplate($name)
@@ -146,6 +154,8 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
      * @param $name
      *
      * @return mixed|null|string|string[]
+     *
+     * @throws BitrixTwigException
      */
     protected function normalizeName($name)
     {
@@ -158,14 +168,7 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
             return static::$normalized[$name];
         }
         if ($isComponentPath) {
-            list($namespace, $component, $template, $file) = explode(':', $name);
-            if (0 === strlen($template)) {
-                $template = '.default';
-            }
-            if (0 === strlen($file)) {
-                $file = 'template';
-            }
-            $normalizedName = "{$namespace}:{$component}:{$template}:{$file}";
+            $normalizedName = $this->explodeName($name);
         } elseif ($isGlobalPath) {
             $normalizedName = $name;
         } else {
@@ -181,14 +184,45 @@ class TwigLoader extends \Twig_Loader_Filesystem implements \Twig_LoaderInterfac
     }
 
     /**
+     * @param string $name
+     *
+     * @return string
+     * @throws BitrixTwigException
+     */
+    private function explodeName($name)
+    {
+        $pathArr = explode(':', $name);
+        if (count($pathArr) < 2) {
+            throw new BitrixTwigException("The component path {$name} is wrong");
+        }
+        $namespace = $pathArr[0];
+        $component = $pathArr[1];
+
+        if (!isset($pathArr[2])) {
+            $template = '.default';
+        } else {
+            $template = $pathArr[2];
+        }
+
+        if (!isset($pathArr[3])) {
+            $file = 'template';
+        } else {
+            $file = $pathArr[3];
+        }
+        return "{$namespace}:{$component}:{$template}:{$file}";
+    }
+
+    /**
      * @param $name
      *
      * @return string
+     *
+     * @throws BitrixTwigException
      */
     private function getComponentTemplatePath($name)
     {
         $name = $this->normalizeName($name);
-        list($namespace, $component, $template, $page) = explode(':', $name);
+        list($namespace, $component, $template, $page) = explode(':', $this->explodeName($name));
         $isRelative = $page !== basename($page);
         $dotExt = '.twig';
         if ($isRelative) {
