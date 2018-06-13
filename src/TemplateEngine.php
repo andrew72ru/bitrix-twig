@@ -87,9 +87,9 @@ class TemplateEngine
 
         if($eventClass === null) {
             $eventClass = new \Bitrix\Main\Event('', self::EVENT_NAME);
-            $eventClass->setParameters([$this->engine]);
         }
 
+        $eventClass->setParameters([$this->engine]);
         $this->generateInitEvent($eventClass);
 
         self::$instance = $this;

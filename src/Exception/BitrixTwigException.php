@@ -7,22 +7,21 @@
 
 namespace Creative\Twig\Exception;
 
-use Throwable;
-
 /**
  * BitrixTwigException.
  */
-class BitrixTwigException extends \Exception
+class BitrixTwigException extends \Twig_Error
 {
     /**
      * BitrixTwigException constructor.
      *
-     * @param string|null    $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param string|null   $message
+     * @param int           $lineno
+     * @param null          $source
+     * @param \Exception    $previous
      */
-    public function __construct($message = null, $code = 500, $previous = null)
+    public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $lineno, $source, $previous);
     }
 }
