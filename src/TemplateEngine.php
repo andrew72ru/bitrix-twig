@@ -12,6 +12,7 @@ use Bitrix\Main\Config\Configuration;
 use Creative\Twig\Exception\BitrixTwigException;
 use Creative\Twig\Extensions\BitrixExtension;
 use Creative\Twig\Extensions\PhpGlobals;
+use Creative\Twig\Extensions\VarDumperExtension;
 
 /**
  * Singleton for render twig templates.
@@ -190,7 +191,7 @@ class TemplateEngine
     protected function addExtensions()
     {
         if ($this->engine->isDebug()) {
-            $this->engine->addExtension(new \Twig_Extension_Debug());
+            $this->engine->addExtension(new VarDumperExtension());
         }
 
         $this->engine->addExtension(new PhpGlobals());
